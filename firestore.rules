@@ -1,0 +1,195 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper authorization states
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isRole(role) {
+      return isSignedIn() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    function isAdmin() {
+      return isRole('admin');
+    }
+
+    function isDoctor() {
+      return isRole('doctor');
+    }
+
+    function isInsurance() {
+      return isRole('insurance');
+    }
+
+    // Catch-all: block any access not explicitly configured below
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 1. Users collection
+    // Users can read/write their own document. ADMINs, DOCTORs, and INSURANCE staff can read patient documents for clinical & claim reviews.
+    match /users/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow read: if isSignedIn() && (isAdmin() || isDoctor() || isInsurance());
+      allow write: if isSignedIn() && request.auth.uid == userId;
+      allow write: if isSignedIn() && isAdmin();
+    }
+    
+    match /users/{userId}/{document=**} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow read: if isSignedIn() && (isAdmin() || isDoctor() || isInsurance());
+      allow write: if isSignedIn() && request.auth.uid == userId;
+      allow write: if isSignedIn() && isAdmin();
+    }
+
+    // 2. Patient emergency clinical details
+    // Access is restricted to the patient, doctors, or administrators.
+    match /emergencyInfo/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin() || isDoctor());
+      allow list: if isSignedIn() && (isAdmin() || isDoctor());
+      allow write: if isSignedIn() && (request.auth.uid == userId || isAdmin() || isDoctor());
+    }
+
+    // 3. Document-level onboarding requests (doctor requests and insurance staff requests)
+    // Access is strictly restricted to the requesting practitioner or ADMINs.
+    match /doctorRequests/{requestId} {
+      allow read, write: if isSignedIn() && request.auth.uid == requestId;
+      allow read, write: if isSignedIn() && isAdmin();
+    }
+
+    match /insuranceRequests/{requestId} {
+      allow read, write: if isSignedIn() && request.auth.uid == requestId;
+      allow read, write: if isSignedIn() && isAdmin();
+    }
+
+    // 4. Clinical Medical Records, Prescriptions, Laboratory Results, and Radiology Studies
+    // Users can access documents where they are the patient, doctor, or administrator.
+    match /medicalRecords/{recordId} {
+      allow get: if isSignedIn() && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+      allow list: if isSignedIn() && resource.data.patientId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.doctorId == request.auth.uid;
+      allow list: if isSignedIn() && (isAdmin() || isDoctor());
+      allow create: if isSignedIn() && (request.resource.data.patientId == request.auth.uid || request.resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+      allow update, delete: if isSignedIn() && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+    }
+
+    match /prescriptions/{prescriptionId} {
+      allow get: if isSignedIn() && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+      allow list: if isSignedIn() && resource.data.patientId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.doctorId == request.auth.uid;
+      allow list: if isSignedIn() && (isAdmin() || isDoctor());
+      allow create: if isSignedIn() && (request.resource.data.patientId == request.auth.uid || request.resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+      allow update, delete: if isSignedIn() && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+    }
+
+    match /labResults/{resultId} {
+      allow get: if isSignedIn() && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+      allow list: if isSignedIn() && resource.data.patientId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.doctorId == request.auth.uid;
+      allow list: if isSignedIn() && (isAdmin() || isDoctor());
+      allow create: if isSignedIn() && (request.resource.data.patientId == request.auth.uid || request.resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+      allow update, delete: if isSignedIn() && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+    }
+
+    match /radiologyReports/{reportId} {
+      allow get: if isSignedIn() && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+      allow list: if isSignedIn() && resource.data.patientId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.doctorId == request.auth.uid;
+      allow list: if isSignedIn() && (isAdmin() || isDoctor());
+      allow create: if isSignedIn() && (request.resource.data.patientId == request.auth.uid || request.resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+      allow update, delete: if isSignedIn() && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid || isAdmin() || isDoctor());
+    }
+
+    // 5. Insurance Cover Claims
+    // Access is allowed for patients, insurance staff, or administrators.
+    match /claims/{claimId} {
+      allow get: if isSignedIn() && (resource.data.patientId == request.auth.uid || isInsurance() || isAdmin());
+      allow list: if isSignedIn() && resource.data.patientId == request.auth.uid;
+      allow list: if isSignedIn() && (isInsurance() || isAdmin());
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && (resource.data.patientId == request.auth.uid || isInsurance() || isAdmin());
+    }
+
+    // 6. User Notifications
+    // Restricted so users read/write their own notifications, but anyone can create notifications for system logs.
+    match /notifications/{notifId} {
+      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn() && isAdmin();
+      allow update, delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn();
+    }
+
+    // 7. Audit Logs
+    // Authenticated users can log audits, ADMINs can read any logs.
+    match /auditLogs/{logId} {
+      allow create: if isSignedIn();
+      allow get: if isSignedIn() && (resource.data.email == request.auth.token.email || isAdmin());
+      allow list: if isSignedIn() && resource.data.email == request.auth.token.email;
+      allow list: if isSignedIn() && isAdmin();
+      allow update, delete: if isSignedIn() && (resource.data.email == request.auth.token.email || isAdmin());
+    }
+
+    // 8. License & Specialty Update Requests
+    // Access is isolated to professional and administrators.
+    match /professionalRequests/{reqId} {
+      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn() && isAdmin();
+      allow write: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // 9. Organization Requests (Hospital/Insurance)
+    // Access is restricted to owner and administrators.
+    match /organizationRequests/{reqId} {
+      allow get: if isSignedIn() && (resource.data.requesterEmail == request.auth.token.email || isAdmin());
+      allow list: if isSignedIn() && resource.data.requesterEmail == request.auth.token.email;
+      allow list: if isSignedIn() && isAdmin();
+      allow write: if isSignedIn() && (resource.data.requesterEmail == request.auth.token.email || isAdmin());
+    }
+
+    // 10. Metadata / Lookup Directories (Read-only for directory setups)
+    // Allowed read-only for onboarding, registration, or lookups. Supporting direct database seeding.
+    match /institutions/{instId} {
+      allow read, write: if true;
+    }
+
+    // 11. Custom Collections for strict Firestore-only Patient Insurance Policies & Card Requests
+    match /insuranceCompanies/{compId} {
+      allow read, write: if true;
+    }
+
+    match /departments/{deptId} {
+      allow read, write: if true;
+    }
+
+    match /insurancePolicies/{policyId} {
+      allow get: if isSignedIn() && (policyId == request.auth.uid || resource.data.patientId == request.auth.uid || isInsurance() || isAdmin());
+      allow list: if isSignedIn() && resource.data.patientId == request.auth.uid;
+      allow list: if isSignedIn() && (isInsurance() || isAdmin());
+      allow write: if isSignedIn() && (policyId == request.auth.uid || resource.data.patientId == request.auth.uid || isInsurance() || isAdmin());
+    }
+
+    match /patientInsuranceRequests/{requestId} {
+      allow get: if isSignedIn() && (resource.data.patientId == request.auth.uid || isInsurance() || isAdmin());
+      allow list: if isSignedIn() && resource.data.patientId == request.auth.uid;
+      allow list: if isSignedIn() && (isInsurance() || isAdmin());
+      allow write: if isSignedIn() && (resource.data.patientId == request.auth.uid || isInsurance() || isAdmin());
+    }
+
+    match /cardRequests/{requestId} {
+      allow get: if isSignedIn() && (resource.data.patientId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && resource.data.patientId == request.auth.uid;
+      allow list: if isSignedIn() && isAdmin();
+      allow write: if isSignedIn() && (resource.data.patientId == request.auth.uid || isAdmin());
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "MedLink Identity",
+  "description": "A comprehensive patient-centered healthcare portal and clinical management system with smart medical QR identity verification, electronic medical records, and role-based workflows.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

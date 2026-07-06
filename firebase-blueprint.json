@@ -1,0 +1,110 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System profile of a patient, doctor, insurance staff, or administrator",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth User ID" },
+        "fullName": { "type": "string", "description": "Legal full name" },
+        "email": { "type": "string", "description": "Electronic email address" },
+        "role": { "type": "string", "enum": ["patient", "doctor", "insurance", "admin"], "description": "System access role" },
+        "status": { "type": "string", "enum": ["active", "pending", "rejected", "suspended"], "description": "Account authorization status" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when user was created" },
+        "photoUrl": { "type": "string", "description": "Avatar photograph path or url" },
+        "phoneNumber": { "type": "string", "description": "Primary voice or messaging number" },
+        "medicalId": { "type": "string", "description": "Patient medical identifier" },
+        "institutionId": { "type": "string", "description": "Institution associated with the user" },
+        "institutionName": { "type": "string", "description": "Institution name associated with the user" },
+        "specialty": { "type": "string", "description": "Practitioner specialization" },
+        "licenseNumber": { "type": "string", "description": "Practitioner medical license number" },
+        "insuranceCompanyId": { "type": "string", "description": "Company ID of insurance staff" },
+        "insuranceCompanyName": { "type": "string", "description": "Company name of insurance staff" },
+        "branchOffice": { "type": "string", "description": "Branch office assigned to insurance user" }
+      },
+      "required": ["uid", "fullName", "email", "role", "status", "createdAt"]
+    },
+    "MedicalInstitution": {
+      "title": "MedicalInstitution",
+      "description": "A hospital, clinic, or specialized healthcare center",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "contactPhone": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
+    "InsuranceCompany": {
+      "title": "InsuranceCompany",
+      "description": "An approved healthcare insurance carrier company",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "address": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "contactPhone": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
+    "DoctorRequest": {
+      "title": "DoctorRequest",
+      "description": "Onboarding request submitted by pending doctors",
+      "type": "object",
+      "properties": {
+        "doctorUid": { "type": "string" },
+        "doctorName": { "type": "string" },
+        "institutionId": { "type": "string" },
+        "institutionName": { "type": "string" },
+        "specialty": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["doctorUid", "doctorName", "status", "createdAt"]
+    },
+    "InsuranceRequest": {
+      "title": "InsuranceRequest",
+      "description": "Onboarding request submitted by pending insurance staff",
+      "type": "object",
+      "properties": {
+        "insuranceUid": { "type": "string" },
+        "insuranceName": { "type": "string" },
+        "companyId": { "type": "string" },
+        "companyName": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["insuranceUid", "insuranceName", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles"
+    },
+    "/institutions/{institutionId}": {
+      "schema": { "$ref": "#/entities/MedicalInstitution" },
+      "description": "Active clinics and hospitals"
+    },
+    "/insuranceCompanies/{companyId}": {
+      "schema": { "$ref": "#/entities/InsuranceCompany" },
+      "description": "Approved insurance carrier entities"
+    },
+    "/doctorRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/DoctorRequest" },
+      "description": "Doctor authorization review queue"
+    },
+    "/insuranceRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/InsuranceRequest" },
+      "description": "Insurance personnel verification requests"
+    }
+  }
+}

@@ -1,0 +1,130 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Catch-all: block any access not explicitly configured below
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 1. Matches any document in the 'users' collection or any of its sub-collections.
+    // Allow read/write operations only if:
+    // - The request is made by an authenticated user.
+    // - The authenticated user's UID matches the {userId} in the document path.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 2. Patient emergency clinical details
+    // Access is strictly restricted to the patient themselves (whose UID matches the document ID)
+    match /emergencyInfo/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 3. Document-level onboarding requests (doctor requests and insurance staff requests)
+    // Access is strictly restricted to the requesting practitioner/user whose UID matches the document ID.
+    match /doctorRequests/{requestId} {
+      allow read, write: if request.auth != null && request.auth.uid == requestId;
+    }
+
+    match /insuranceRequests/{requestId} {
+      allow read, write: if request.auth != null && request.auth.uid == requestId;
+    }
+
+    // 4. Clinical Medical Records, Prescriptions, Laboratory Results, and Radiology Studies
+    // Users can only access documents where they are either the patient or the attending doctor.
+    match /medicalRecords/{recordId} {
+      allow read, write: if request.auth != null && (
+        (resource != null && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid)) ||
+        (request.resource != null && (request.resource.data.patientId == request.auth.uid || request.resource.data.doctorId == request.auth.uid))
+      );
+    }
+
+    match /prescriptions/{prescriptionId} {
+      allow read, write: if request.auth != null && (
+        (resource != null && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid)) ||
+        (request.resource != null && (request.resource.data.patientId == request.auth.uid || request.resource.data.doctorId == request.auth.uid))
+      );
+    }
+
+    match /labResults/{resultId} {
+      allow read, write: if request.auth != null && (
+        (resource != null && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid)) ||
+        (request.resource != null && (request.resource.data.patientId == request.auth.uid || request.resource.data.doctorId == request.auth.uid))
+      );
+    }
+
+    match /radiologyReports/{reportId} {
+      allow read, write: if request.auth != null && (
+        (resource != null && (resource.data.patientId == request.auth.uid || resource.data.doctorId == request.auth.uid)) ||
+        (request.resource != null && (request.resource.data.patientId == request.auth.uid || request.resource.data.doctorId == request.auth.uid))
+      );
+    }
+
+    // 5. Insurance Cover Claims
+    // Access is isolated to the patient claimant matching the patient ID.
+    match /claims/{claimId} {
+      allow read, write: if request.auth != null && (
+        (resource != null && resource.data.patientId == request.auth.uid) ||
+        (request.resource != null && request.resource.data.patientId == request.auth.uid)
+      );
+    }
+
+    // 6. User Notifications
+    // Restricted so user only reads/writes their own notifications.
+    match /notifications/{notifId} {
+      allow read, write: if request.auth != null && (
+        (resource != null && resource.data.userId == request.auth.uid) ||
+        (request.resource != null && request.resource.data.userId == request.auth.uid)
+      );
+    }
+
+    // 7. Audit Logs
+    // Matched using user's email to maintain action records access.
+    match /auditLogs/{logId} {
+      allow read, write: if request.auth != null && (
+        (resource != null && resource.data.email == request.auth.token.email) ||
+        (request.resource != null && request.resource.data.email == request.auth.token.email)
+      );
+    }
+
+    // 8. License & Specialty Update Requests
+    // Access is isolated to the requesting professional.
+    match /professionalRequests/{reqId} {
+      allow read, write: if request.auth != null && (
+        (resource != null && resource.data.userId == request.auth.uid) ||
+        (request.resource != null && request.resource.data.userId == request.auth.uid)
+      );
+    }
+
+    // 9. Organization Requests (Hospital/Insurance)
+    // Access is restricted of the owner matching the requested email.
+    match /organizationRequests/{reqId} {
+      allow read, write: if request.auth != null && (
+        (resource != null && resource.data.requesterEmail == request.auth.token.email) ||
+        (request.resource != null && request.resource.data.requesterEmail == request.auth.token.email)
+      );
+    }
+
+    // 10. Metadata / Lookup Directories (Read-only for directory setups)
+    // Allowed read-only for onboarding, registration, or lookups. No user is authorized to write here directly.
+    match /institutions/{instId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /insuranceCompanies/{compId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /departments/{deptId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+  }
+}
