@@ -20,22 +20,22 @@ The platform features polished, responsive user interfaces styled with Tailwind 
 ### Visual Showcase Gallery
 
 #### 1. Home Landing Page
-![Home Landing Page](assets/screenshots/main.png)
+![Home Landing Page](main.png)
 
 #### 2. User Login Interface
-![Login Page](assets/screenshots/login.png)
+![Login Page](login.png)
 
 #### 3. Account Registration Flow
-![Register Page](assets/screenshots/register.png)
+![Register Page](register.png)
 
 #### 4. System Administrator Dashboard
-![Admin Dashboard](assets/screenshots/admin.png)
+![Admin Dashboard](admin.png)
 
 #### 5. Clinical Doctor Workspace
-![Doctor Dashboard](assets/screenshots/doctor.png)
+![Doctor Dashboard](doctor.png)
 
 #### 6. Patient Health & Claims Portal
-![Patient Dashboard](assets/screenshots/patient.png)
+![Patient Dashboard](patient.png)
 
 ---
 
