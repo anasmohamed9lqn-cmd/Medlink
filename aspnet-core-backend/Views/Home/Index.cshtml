@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "Unified Medical Platform";
+}
+
+<div class="space-y-12 py-6">
+    <!-- Hero Block -->
+    <div class="text-center max-w-3xl mx-auto space-y-4">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold text-sky-700 bg-sky-50 border border-sky-100 rounded-full uppercase tracking-wider font-mono">
+            🔥 Hybrid Architectural Shift
+        </span>
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+            Nile Health Unified <span class="text-sky-500">MVC Engine</span>
+        </h1>
+        <p class="text-base text-slate-500 font-normal leading-relaxed">
+            Successfully migrated your backend code to robust Model-View-Controller architecture under ASP.NET Core 8.0. Securely bound with real-time Firebase services, rendering server-side Razor layouts with maximum speed.
+        </p>
+        <div class="pt-4 flex justify-center gap-3">
+            <a href="/Home/Dashboard" class="px-5 py-3 text-sm font-semibold text-white bg-sky-500 hover:bg-sky-600 rounded-xl transition-all shadow-md shadow-sky-100">
+                Launch MVC Dashboard
+            </a>
+            <a href="#architecture" class="px-5 py-3 text-sm font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-all">
+                Learn More
+            </a>
+        </div>
+    </div>
+
+    <!-- Live Statistics From Firebase Firestore -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-6">
+        <!-- Card 1 -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <div class="text-xs font-mono font-black text-slate-400 uppercase tracking-wider mb-2">Registered Accounts</div>
+            <div class="flex items-baseline gap-2">
+                <span class="text-3xl font-bold text-slate-900 font-mono">@ViewBag.TotalUsers</span>
+                <span class="text-xs text-slate-400">Total</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-2 font-normal">
+                Active clinical professionals, registered patients, and verified insurance stakeholders.
+            </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <div class="text-xs font-mono font-black text-slate-400 uppercase tracking-wider mb-2">Connected Medical Facilities</div>
+            <div class="flex items-baseline gap-2">
+                <span class="text-3xl font-bold text-sky-500 font-mono">@ViewBag.TotalInstitutions</span>
+                <span class="text-xs text-slate-400">Centers</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-2 font-normal">
+                Public hospitals, university clinics, private centers, and licensed medical syndicates.
+            </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <div class="text-xs font-mono font-black text-slate-400 uppercase tracking-wider mb-2">Security Standard</div>
+            <div class="flex items-baseline gap-2">
+                <span class="text-3xl font-bold text-emerald-500 font-mono">JWT</span>
+                <span class="text-xs text-slate-400">Authorized</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-2 font-normal">
+                End-to-end medical encryption enforced using Google Firebase JSON Web Tokens.
+            </p>
+        </div>
+    </div>
+
+    <!-- Features & Custom Guidelines Section -->
+    <div id="architecture" class="bg-white rounded-3xl border border-slate-200 p-8 space-y-8">
+        <div class="space-y-2">
+            <span class="text-xs font-bold text-sky-500 font-mono uppercase tracking-wide">Developer Handbook</span>
+            <h2 class="text-2xl font-bold text-slate-900">What has been completed in this MVC conversion</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-4">
+                <h3 class="font-bold text-slate-800 text-lg">📁 Structured Clean Architecture</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    All original REST API endpoints have been consolidated to live alongside beautiful Razor Views. Controllers inherit from the base <code>Controller</code> class, supporting both HTML visual responses via <code>View()</code> and raw JSON data via <code>Json()</code> or <code>Ok()</code>.
+                </p>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <pre class="text-[11px] text-slate-600 font-mono overflow-x-auto">
+// Controllers return fully formatted views
+public async Task&lt;IActionResult&gt; Dashboard() {
+    var list = await _firebaseService.GetUsers();
+    return View(list);
+}</pre>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="font-bold text-slate-800 text-lg">🤝 Firebase Integration</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    The MVC controller fetches data directly from Google Cloud Firestore collections. This means no simulated or static mock records. Every user and institution you register in the React front-end or through the platform instantly propagates to this C# MVC view.
+                </p>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <pre class="text-[11px] text-slate-600 font-mono overflow-x-auto">
+// Service binds securely with C# Models
+[FirestoreData]
+public class User {
+    [FirestoreProperty("fullName")]
+    public string FullName { get; set; }
+}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

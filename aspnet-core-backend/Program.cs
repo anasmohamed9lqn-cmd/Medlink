@@ -5,7 +5,7 @@ using NileHealth.Api.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 
 // Register the Firebase & Firestore backend helper service
 builder.Services.AddSingleton<FirebaseService>();
@@ -55,8 +55,14 @@ app.UseHttpsRedirection();
 // Apply dynamic CORS policy
 app.UseCors("AllowReactFrontend");
 
+app.UseStaticFiles();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllers();
 
