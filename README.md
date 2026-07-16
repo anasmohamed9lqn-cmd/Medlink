@@ -1,6 +1,6 @@
-# Nile Health: Unified Healthcare Management System
+# Medlink Identity: Unified Healthcare Management System
 
-Nile Health is a cutting-edge, hybrid medical ecosystem designed to bridge the gap between healthcare administrators, clinical professionals, and patients. Built using a high-performance **React 18 & Vite Frontend** and a robust **ASP.NET Core 8.0 MVC & Web API Backend**, the platform integrates **Google Cloud Firebase Firestore** for real-time synchronization and secure **JWT-based Firebase Authentication**.
+Medlink Identityh is a cutting-edge, hybrid medical ecosystem designed to bridge the gap between healthcare administrators, clinical professionals, and patients. Built using a high-performance **React 18 & Vite Frontend** and a robust **ASP.NET Core 8.0 MVC & Web API Backend**, the platform integrates **Google Cloud Firebase Firestore** for real-time synchronization and secure **JWT-based Firebase Authentication**.
 
 ---
 
