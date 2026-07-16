@@ -10,12 +10,12 @@ The platform features polished, responsive user interfaces styled with Tailwind 
 
 | Preview Screen | Description | Relative Image Path |
 | :--- | :--- | :--- |
-| **1. Public Landing Page** | High-fidelity introductory website showcasing statistics, features, and platform capabilities. | `assets/screenshots/landing_page.png` |
-| **2. Authentication portal** | Secure portal featuring dual-layer JWT logins, email validations, and credentials matching. | `assets/screenshots/login_page.png` |
-| **3. Multi-Role Registration** | Seamless sign-up interface allowing users to register as Patients, Doctors, or Insurance partners. | `assets/screenshots/register_page.png` |
-| **4. Central Admin Dashboard** | Control center for approving clinical professionals, managing facilities, and viewing audit logs. | `assets/screenshots/admin_dashboard.png` |
-| **5. Doctor Clinical Workspace** | Clinical dashboard for diagnostics, scheduling, prescriptions, and direct image-linked radiographs. | `assets/screenshots/doctor_dashboard.png` |
-| **6. Patient Wellness Portal** | Client-side hub for patient records, medical cards, wellness charts, and insurance claim tracking. | `assets/screenshots/patient_dashboard.png` |
+| **1. Public Landing Page** | High-fidelity introductory website showcasing statistics, features, and platform capabilities. | `assets/screenshots/main.png` |
+| **2. Authentication portal** | Secure portal featuring dual-layer JWT logins, email validations, and credentials matching. | `assets/screenshots/login.png` |
+| **3. Multi-Role Registration** | Seamless sign-up interface allowing users to register as Patients, Doctors, or Insurance partners. | `assets/screenshots/register.png` |
+| **4. Central Admin Dashboard** | Control center for approving clinical professionals, managing facilities, and viewing audit logs. | `assets/screenshots/admin.png` |
+| **5. Doctor Clinical Workspace** | Clinical dashboard for diagnostics, scheduling, prescriptions, and direct image-linked radiographs. | `assets/screenshots/doctor.png` |
+| **6. Patient Wellness Portal** | Client-side hub for patient records, medical cards, wellness charts, and insurance claim tracking. | `assets/screenshots/patient.png` |
 
 ### Visual Showcase Gallery
 
