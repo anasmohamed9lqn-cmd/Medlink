@@ -1,6 +1,21 @@
 # Medlink Identity: Unified Healthcare Management System
 
-Medlink Identityh is a cutting-edge, hybrid medical ecosystem designed to bridge the gap between healthcare administrators, clinical professionals, and patients. Built using a high-performance **React 18 & Vite Frontend** and a robust **ASP.NET Core 8.0 MVC & Web API Backend**, the platform integrates **Google Cloud Firebase Firestore** for real-time synchronization and secure **JWT-based Firebase Authentication**.
+Medlink Identity is a cutting-edge hybrid healthcare ecosystem designed to bridge the gap between healthcare administrators, clinical professionals, and patients. Built using a high-performance **React 18 & Vite Frontend** and a robust **ASP.NET Core 8.0 MVC & Web API Backend**, the platform integrates **Google Cloud Firebase Firestore** for real-time synchronization and secure **Firebase Authentication with JWT**.
+
+---
+
+## 📱 Mobile Application
+
+- **Medlink Mobile Application (APK)**  
+  https://drive.google.com/file/d/1kXSzX3qVFtQ-bpDkjEkO27z-g3-Ig0_u/view?usp=drivesdk
+
+- **Medlink Mobile Application Review (Demo Video)**  
+  https://drive.google.com/file/d/1kpQZTvxizXNy7rrXueqMmZZAFksZGrEa/view?usp=drivesdk
+
+## 🌐 Live Web Demo
+
+- **Medlink Web Application (Netlify)**  
+  https://agent-6a4ba52fc85a4607ace--comfy-bavarois-ebff4a.netlify.app
 
 ---
 
